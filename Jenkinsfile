@@ -7,14 +7,6 @@ def mavenHome = tool name: "maven3.8.4"
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
 
-echo "Job name is: ${env.JOB_NAME}" 
-echo "Node name is: ${env.NODE_NAME}" 
-echo "Build number is: ${env.BUILD_NUMBER}" 
-
-
-try{
-
-sendSlackNotifications('STARTED')
 
 
 stage('CheckoutCode')
@@ -31,7 +23,7 @@ stage('TriggerDownstreamJob'){
 build job: 'pipelinescriptwithbuildparameters'
 }
 
-/*
+
 stage('ExecuteSonarQubeReport')
 {
 sh "${mavenHome}/bin/mvn sonar:sonar"
@@ -49,44 +41,5 @@ sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@17
 }
  
 }
-*/
-}catch(e){
-currentBuild.result = "FAILED"
-    throw e
+
 }
-finally{
-sendSlackNotifications(currentBuild.result)
-}
-
-}//Node Closing
-
-//Belode code will use for send slack build notifications
-
-/*
-def sendSlackNotifications(String buildStatus = 'STARTED') {
-  
-  buildStatus =  buildStatus ?: 'SUCCESS'
-
-  // Default values
-  def colorName = 'RED'
-  def colorCode = '#FF0000'
-  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-  def summary = "${subject} (${env.BUILD_URL})"
-
-  // Override default values based on build status
-  if (buildStatus == 'STARTED') {
-    color = 'YELLOW'
-    colorCode = '#FFFF00'
-  } else if (buildStatus == 'SUCCESS') {
-    color = 'GREEN'
-    colorCode = '#00FF00'
-  } else {
-    color = 'RED'
-    colorCode = '#FF0000'
-  }
-
-  // Send notifications
-  slackSend (color: colorCode, message: summary, channel: 'walmart')
-}
-*/
-
