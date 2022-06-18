@@ -1,3 +1,5 @@
+@Library('sharedlib-slacknotifications') _
+
 node{
 
 def mavenHome = tool name: "maven3.8.4"
@@ -5,6 +7,8 @@ def mavenHome = tool name: "maven3.8.4"
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
 
+sendSlackNotifications('STARTED')    
+    
 stage('CheckoutCode')
 {
 git branch: 'development', credentialsId: '4c698820-4fe1-4cbf-a12c-a9c8d797cc4e', url: 'https://github.com/suman-devops-github/maven-web-application.git'
