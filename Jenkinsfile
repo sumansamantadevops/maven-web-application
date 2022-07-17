@@ -22,7 +22,7 @@ sh "${mavenHome}/bin/mvn sonar:sonar"
 
 stage('UploadArtifactsintoNexus')
 {
-nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: 'target/maven-web-application.war', type: 'war']], credentialsId: '4c409527-f08f-4e44-9dc6-cd105d346d04', groupId: 'com.mt', nexusUrl: '172.31.46.71', nexusVersion: 'nexus2', protocol: 'http', repository: 'http://13.233.85.254:9980/suman/repository/jenkinsscriptstorage/', version: '0.0.1-SNAPSHOT'
+sh "${mavenHome}/bin/mvn deploy"
 }
 
 stage('DeployAppintoTomcatServer')
